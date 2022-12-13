@@ -143,3 +143,8 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Data files
+data/*.csv
+data/*.xlsx
+data/*.txt
