@@ -150,3 +150,6 @@ data/*
 
 # Work db files
 *.db
+
+# Plots
+*/Plots/*
