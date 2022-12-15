@@ -43,9 +43,13 @@ $ source ./venv/bin/activate
 $ python3 -m pip install --upgrade pip
 ```
 
-### Install the requirements
+### Install the requirements from the desired requirements.txt file, e.g.
 
     $ python3 -m pip install -r requirements.txt
+
+or
+
+    $ python3 -m pip install -r reports2022/requirements.txt
 
 <br/>
 
