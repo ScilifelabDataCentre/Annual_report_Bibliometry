@@ -7,7 +7,6 @@ This repository contains the code required to perform the bibliometric analysis 
 <br/>
 
 ***
-***
 
 
 ## Setup
@@ -54,10 +53,11 @@ or
 <br/>
 
 ***
-***
 
 
 ## Usage
+
+The programs are implemented as either Python scripts or Jupyter notebooks. 
 
 ### Activate the virtual environment
 
@@ -65,7 +65,16 @@ or
 $ source ./venv/bin/activate
 ```
 
-TODO: describe executing Python scripts (or jupyter notebooks if offered)
+### Execute a Python script at the command prompt
+
+```python
+python3 [script_file.py]
+```
+
+### Run a Jupyter notebook
+
+Select the python kernel from the local virtual env.
+Follow the instructions in each Juputer notebook to execute the notebook cells. 
 
 <br/>
 
