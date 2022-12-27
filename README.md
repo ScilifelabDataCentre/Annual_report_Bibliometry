@@ -7,7 +7,6 @@ This repository contains the code required to perform the bibliometric analysis 
 <br/>
 
 ***
-***
 
 
 ## Setup
@@ -43,17 +42,22 @@ $ source ./venv/bin/activate
 $ python3 -m pip install --upgrade pip
 ```
 
-### Install the requirements
+### Install the requirements from the desired requirements.txt file, e.g.
 
     $ python3 -m pip install -r requirements.txt
+
+or
+
+    $ python3 -m pip install -r reports2022/requirements.txt
 
 <br/>
 
 ***
-***
 
 
 ## Usage
+
+The programs are implemented as either Python scripts or Jupyter notebooks. 
 
 ### Activate the virtual environment
 
@@ -61,7 +65,16 @@ $ python3 -m pip install --upgrade pip
 $ source ./venv/bin/activate
 ```
 
-TODO: describe executing Python scripts (or jupyter notebooks if offered)
+### Execute a Python script at the command prompt
+
+```python
+python3 [script_file.py]
+```
+
+### Run a Jupyter notebook
+
+Select the python kernel from the local virtual env.
+Follow the instructions in each Juputer notebook to execute the notebook cells. 
 
 <br/>
 

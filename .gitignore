@@ -145,6 +145,11 @@ dist
 .pnp.*
 
 # Data files
-data/*.csv
-data/*.xlsx
-data/*.txt
+data/*
+!data/README.md
+
+# Work db files
+*.db
+
+# Plots
+*/Plots/*
