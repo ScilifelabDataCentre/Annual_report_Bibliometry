@@ -18,8 +18,8 @@ benchmark = pd.read_excel(
 # The information for affiliates will come with their subjects and impact scores assigned
 
 affiliates = pd.read_excel(
-    "Data/SciLifeLab_cf_subj_cat_byaddress-2.xlsx",
-    sheet_name="SciLifeLab_cf_subj_cat_byaddres",
+    "Data/SciLifeLab_cf_subj_cat_affiliates.xlsx",
+    sheet_name="SciLifeLab_cf_subj_cat_affiliat",
     header=0,
     engine="openpyxl",
     keep_default_na=False,
@@ -28,15 +28,15 @@ affiliates = pd.read_excel(
 # The information for infrastructure units will come with their subjects and impact scores assigned
 
 infra = pd.read_excel(
-    "Data/SciLifeLab_cf_subj_cat_facilities.xlsx",
-    sheet_name="SciLifeLab_cf_subj_cat_faciliti",
+    "Data/SciLifeLab_cf_subj_cat_infrastructure.xlsx",
+    sheet_name="SciLifeLab_cf_subj_cat_infrastr",
     header=0,
     engine="openpyxl",
     keep_default_na=False,
 )
 
 # we calculate the scores based on the last 3 years for which scores are available
-# for 2021, this is 2016-2019
+# for 2022, this is 2017-2020
 
 benchmark_compare = benchmark[
     [
@@ -46,10 +46,10 @@ benchmark_compare = benchmark[
     ]  # , "cf_scxwo_full"]
 ]
 benchmark_compare = benchmark_compare[
-    (benchmark_compare["Publication_year"] == 2016)
-    | (benchmark_compare["Publication_year"] == 2017)
+    (benchmark_compare["Publication_year"] == 2017)
     | (benchmark_compare["Publication_year"] == 2018)
     | (benchmark_compare["Publication_year"] == 2019)
+    | (benchmark_compare["Publication_year"] == 2020)
 ]
 
 bench_pp_fields = (
@@ -72,35 +72,35 @@ aff_sub = affiliates[
         "Doc_type_code_rev",
     ]
 ]
-aff_201619 = aff_sub[
-    (aff_sub["Publication_year"] == 2016)
-    | (aff_sub["Publication_year"] == 2017)
+aff_years = aff_sub[
+    (aff_sub["Publication_year"] == 2017)
     | (aff_sub["Publication_year"] == 2018)
     | (aff_sub["Publication_year"] == 2019)
+    | (aff_sub["Publication_year"] == 2020)
 ]
-aff_201619 = aff_201619[
+aff_years = aff_years[
     (
-        aff_201619["Subject_category"] == "BIOCHEMICAL RESEARCH METHODS"
+        aff_years["Subject_category"] == "BIOCHEMICAL RESEARCH METHODS"
     )  # add in the relevant 6 'top' fields
-    | (aff_201619["Subject_category"] == "BIOCHEMISTRY & MOLECULAR BIOLOGY")
-    | (aff_201619["Subject_category"] == "BIOTECHNOLOGY & APPLIED MICROBIOLOGY")
-    | (aff_201619["Subject_category"] == "CELL BIOLOGY")
-    | (aff_201619["Subject_category"] == "GENETICS & HEREDITY")
-    | (aff_201619["Subject_category"] == "ONCOLOGY")
+    | (aff_years["Subject_category"] == "BIOCHEMISTRY & MOLECULAR BIOLOGY")
+    | (aff_years["Subject_category"] == "BIOTECHNOLOGY & APPLIED MICROBIOLOGY")
+    | (aff_years["Subject_category"] == "CELL BIOLOGY")
+    | (aff_years["Subject_category"] == "GENETICS & HEREDITY")
+    | (aff_years["Subject_category"] == "ONCOLOGY")
 ]
 
 # need to keep just the values for just the article types used in these calculations
 
-aff_201619 = aff_201619[
-    (aff_201619["Doc_type_code_rev"] == "RV")
-    | (aff_201619["Doc_type_code_rev"] == "AR")
-    | (aff_201619["Doc_type_code_rev"] == "PP")
+aff_years = aff_years[
+    (aff_years["Doc_type_code_rev"] == "RV")
+    | (aff_years["Doc_type_code_rev"] == "AR")
+    | (aff_years["Doc_type_code_rev"] == "PP")
 ]
 
-aff_201619["Top10_scxwo"] = aff_201619["Top10_scxwo"].astype(float)
+aff_years["Top10_scxwo"] = aff_years["Top10_scxwo"].astype(float)
 
 aff_pp_fields = (
-    aff_201619.groupby("Subject_category")["Top10_scxwo"].mean().reset_index()
+    aff_years.groupby("Subject_category")["Top10_scxwo"].mean().reset_index()
 )
 aff_pp_fields = aff_pp_fields.rename(
     columns={
@@ -115,38 +115,38 @@ aff_pp_fields = aff_pp_fields.rename(
 inf_sub = infra[
     ["Publication_year", "Subject_category", "Top10_scxwo", "Doc_type_code_rev"]
 ]
-inf_201619 = inf_sub[
-    (inf_sub["Publication_year"] == 2016)
-    | (inf_sub["Publication_year"] == 2017)
+inf_years = inf_sub[
+    (inf_sub["Publication_year"] == 2017)
     | (inf_sub["Publication_year"] == 2018)
     | (inf_sub["Publication_year"] == 2019)
+    | (inf_sub["Publication_year"] == 2020)
 ]
 
 # filter for categories for which benchmarking values have been calculated
 
-inf_201619 = inf_201619[
+inf_years = inf_years[
     (
-        inf_201619["Subject_category"] == "BIOCHEMICAL RESEARCH METHODS"
+        inf_years["Subject_category"] == "BIOCHEMICAL RESEARCH METHODS"
     )  # put in relevant subject categories
-    | (inf_201619["Subject_category"] == "BIOCHEMISTRY & MOLECULAR BIOLOGY")
-    | (inf_201619["Subject_category"] == "BIOTECHNOLOGY & APPLIED MICROBIOLOGY")
-    | (inf_201619["Subject_category"] == "CELL BIOLOGY")
-    | (inf_201619["Subject_category"] == "GENETICS & HEREDITY")
-    | (inf_201619["Subject_category"] == "ONCOLOGY")
+    | (inf_years["Subject_category"] == "BIOCHEMISTRY & MOLECULAR BIOLOGY")
+    | (inf_years["Subject_category"] == "BIOTECHNOLOGY & APPLIED MICROBIOLOGY")
+    | (inf_years["Subject_category"] == "CELL BIOLOGY")
+    | (inf_years["Subject_category"] == "GENETICS & HEREDITY")
+    | (inf_years["Subject_category"] == "ONCOLOGY")
 ]
 
 # filter for publication type
 
-inf_201619 = inf_201619[
-    (inf_201619["Doc_type_code_rev"] == "RV")
-    | (inf_201619["Doc_type_code_rev"] == "AR")
-    | (inf_201619["Doc_type_code_rev"] == "PP")
+inf_years = inf_years[
+    (inf_years["Doc_type_code_rev"] == "RV")
+    | (inf_years["Doc_type_code_rev"] == "AR")
+    | (inf_years["Doc_type_code_rev"] == "PP")
 ]
 
-inf_201619["Top10_scxwo"] = inf_201619["Top10_scxwo"].astype(float)
+inf_years["Top10_scxwo"] = inf_years["Top10_scxwo"].astype(float)
 
 inf_pp_fields = (
-    inf_201619.groupby("Subject_category")["Top10_scxwo"].mean().reset_index()
+    inf_years.groupby("Subject_category")["Top10_scxwo"].mean().reset_index()
 )
 inf_pp_fields = inf_pp_fields.rename(
     columns={
@@ -174,7 +174,7 @@ comb_all["aff_pp"] = comb_all["aff_pp"] * 100
 comb_all["inf_pp"] = comb_all["inf_pp"] * 100
 
 # use the below commands to check
-# print(comb_all)
+print(comb_all)
 # comb_all.to_excel("PPtop10benchmarkingvalues.xlsx")
 
 fig = go.Figure(
@@ -253,5 +253,5 @@ fig.update_yaxes(
 if not os.path.isdir("Plots/"):
     os.mkdir("Plots/")
 
-fig.write_image("Plots/benchmark_1619_pptop10_swe.svg")
-fig.write_image("Plots/benchmark_1619_pptop10_swe.png")
+fig.write_image("Plots/benchmark_pptop10_swe_2.svg")
+fig.write_image("Plots/benchmark_pptop10_swe_2.png")
