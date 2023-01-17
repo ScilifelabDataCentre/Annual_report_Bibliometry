@@ -2,6 +2,7 @@
 # Based on data from infrastructure publications database (filtered for active facilities each year)
 
 import pandas as pd
+import numpy as np
 
 # information from publication database
 
@@ -16,8 +17,8 @@ Pubs_JIF_raw = pd.read_excel(
 # information for JIF scores
 
 JIF_scores_raw = pd.read_excel(
-    "Data/JIF_scores_2022.xlsx",
-    sheet_name="LianeHughes_JCR_JournalResults",
+    "Data/JCR_JournalResults_12_2022_byISSN_221208.xlsx",
+    sheet_name="JCR",
     header=0,
     engine="openpyxl",
     keep_default_na=False,
@@ -95,8 +96,6 @@ JIF_merge_ISSNL = pd.merge(
 
 JIF_merge_ISSNL.drop_duplicates(subset="Title", keep="first", inplace=True)
 
-JIF_merge_ISSNL.to_excel("infra_check_manual.xlsx")
-
 JIF_merge_ISSNL["JIF Without Self Cites_x"] = JIF_merge_ISSNL[
     "JIF Without Self Cites_x"
 ].fillna(JIF_merge_ISSNL["JIF Without Self Cites_y"])
@@ -145,64 +144,67 @@ JIF_merge_abbnames = JIF_merge_abbnames.drop(
 
 # JIF_merge_abbnames.to_excel("infra_check_manual.xlsx")
 
-# JIF_merge_fullnames = pd.merge(
-#     JIF_merge_abbnames,
-#     JIF_scores_sublow,
-#     how="left",
-#     left_on="Journal",
-#     right_on="Full Journal Title",
-# )
+# print(JIF_merge_abbnames.info())
 
-# JIF_merge_fullnames.drop_duplicates(subset="Title", keep="first", inplace=True)
+# another ISSN match (ISSN with eISSN)
 
-# JIF_merge_fullnames["Impact Factor without Journal Self Cites_x"] = JIF_merge_fullnames[
-#     "Impact Factor without Journal Self Cites_x"
-# ].fillna(JIF_merge_fullnames["Impact Factor without Journal Self Cites"])
+JIF_merge_weISSN = pd.merge(
+    JIF_merge_abbnames,
+    JIF_scores_sublow,
+    how="left",
+    left_on="ISSN_x",
+    right_on="eISSN",
+)
 
-# JIF_merge_fullnames = JIF_merge_fullnames.drop(
-#     [
-#         "ISSN",
-#         "Full Journal Title",
-#         "JCR Abbreviated Title",
-#         "Impact Factor without Journal Self Cites",
-#     ],
-#     axis=1,
-# )
+JIF_merge_weISSN.drop_duplicates(subset="Title", keep="first", inplace=True)
 
-# ## below prints out a file that can be checked to determine whether
-# ## manual work may increase the number of matches
+JIF_merge_weISSN["JIF Without Self Cites_x"] = JIF_merge_weISSN[
+    "JIF Without Self Cites_x"
+].fillna(JIF_merge_weISSN["JIF Without Self Cites"])
 
-# JIF_merge_fullnames.rename(
-#     columns={
-#         "ISSN_x": "ISSN",
-#         "Full Journal Title_x": "Full Journal Title",
-#         "JCR Abbreviated Title_x": "JCR Abbreviated Title",
-#         "Impact Factor without Journal Self Cites_x": "JIF",
-#     },
-#     inplace=True,
-# )
+JIF_merge_weISSN = JIF_merge_weISSN.drop(
+    [
+        "ISSN",
+        "eISSN",
+        "Journal name",
+        "JCR Abbreviation",
+        "JIF Without Self Cites",
+    ],
+    axis=1,
+)
 
-# JIF_merge_fullnames.to_excel("INFRA_FOR_ALTMETRICS.xlsx")
+# JIF_merge_weISSN.to_excel("infra_check_manual_update.xlsx")
 
 # # # segment up the JIFs to groups
 
-# JIF_merge_fullnames["JIF"] = JIF_merge_fullnames["JIF"].fillna(-1)
+JIF_merge_weISSN.rename(
+    columns={
+        "ISSN_x": "ISSN",
+        "JIF Without Self Cites_x": "JIF",
+    },
+    inplace=True,
+)
 
-# JIF_merge_fullnames["JIF"] = pd.to_numeric(JIF_merge_fullnames["JIF"])
-# JIF_merge_fullnames["JIFcat"] = pd.cut(
-#     JIF_merge_fullnames["JIF"],
-#     bins=[-1, 0, 6, 9, 25, 1000],
-#     include_lowest=True,
-#     labels=["JIF unknown", "JIF <6", "JIF 6-9", "JIF 9-25", "JIF >25"],
-# )
+JIF_merge_weISSN = JIF_merge_weISSN.replace("n/a", np.nan)
 
+JIF_merge_weISSN["JIF"] = JIF_merge_weISSN["JIF"].fillna(-1)
+
+JIF_merge_weISSN["JIF"] = pd.to_numeric(JIF_merge_weISSN["JIF"])
+JIF_merge_weISSN["JIFcat"] = pd.cut(
+    JIF_merge_weISSN["JIF"],
+    bins=[-1, 0, 6, 9, 25, 1000],
+    include_lowest=True,
+    labels=["JIF unknown", "JIF <6", "JIF 6-9", "JIF 9-25", "JIF >25"],
+)
+JIF_merge_weISSN.to_excel("JIF_TESTING.xlsx")
 # # Need to do a group by and check the sums work
 
-# JIF_sub = JIF_merge_fullnames[["Year", "Labels", "JIFcat"]]
+JIF_sub = JIF_merge_weISSN[["Year", "Labels", "JIFcat"]]
 
-# JIF_sub_group_inf = JIF_sub.groupby(["Year", "JIFcat"]).size().reset_index()
 
-# JIF_sub_group_inf.columns = ["Year", "JIFcat", "Count"]
+JIF_sub_group_inf = JIF_sub.groupby(["Year", "JIFcat"]).size().reset_index()
+
+JIF_sub_group_inf.columns = ["Year", "JIFcat", "Count"]
 
 
 # # Use this to check that the sums are as expected given the original publication files

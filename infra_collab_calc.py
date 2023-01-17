@@ -2,7 +2,7 @@ import pandas as pd
 
 # get the data
 infra = pd.read_excel(
-    "Data/Infrastructure_pd_extract_22.xlsx",
+    "Data/Infrastructure_pd_extract_221213.xlsx",
     sheet_name="Publications",
     header=0,
     engine="openpyxl",
@@ -223,3 +223,18 @@ Perc_collab = (
 # Output percentage, so that it can be communicated to OO
 
 print(Perc_collab)
+
+# noticed that there are some errors in the automatic counts, so need to make manual adjustments
+# specifically 4 units have count  of 1, when should be 2
+print((new_bits["No_units"].map(lambda x: x > 1).sum()) + 4)
+print(new_bits["No_units"].count())
+
+Perc_collab = (
+    (new_bits["No_units"].map(lambda x: x > 1).sum() + 4)
+    / (new_bits["No_units"].count())
+) * 100
+
+# Output percentage, so that it can be communicated to OO
+
+print(Perc_collab)
+# should be 11.04

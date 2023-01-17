@@ -10,8 +10,8 @@ from colour_science_2021 import (
 # facilities data
 from JIF_infra_data_prep import JIF_sub_group_inf
 
-# fellows data
-from JIF_fell_data_prep import JIF_sub_group_fell
+# # fellows data
+# from JIF_fell_data_prep import JIF_sub_group_fell
 
 # affiliates data
 from JIF_aff_data_prep import JIF_sub_group_aff
@@ -91,14 +91,14 @@ def JIF_graph_func(input, name):
         linecolor="black",
         # add more years as needed
         ticktext=[
-            "<b>" + Years[0] + "</b>",  # 2014
-            "<b>" + Years[1] + "</b>",  # 2015
-            "<b>" + Years[2] + "</b>",  # 2016
-            "<b>" + Years[3] + "</b>",  # 2017
-            "<b>" + Years[4] + "</b>",  # 2018
-            "<b>" + Years[5] + "</b>",  # 2019
-            "<b>" + Years[6] + "</b>",  # 2020
-            "<b>" + Years[7] + "</b>",  # 2021
+            "<b>" + Years[0] + "</b>",  # 2017
+            "<b>" + Years[1] + "</b>",  # 2018
+            "<b>" + Years[2] + "</b>",  # 2019
+            "<b>" + Years[3] + "</b>",  # 2020
+            "<b>" + Years[4] + "</b>",  # 2021
+            "<b>" + Years[5] + "</b>",  # 2022
+            # "<b>" + Years[6] + "</b>",  # 2020
+            # "<b>" + Years[7] + "</b>",  # 2021
         ],
         tickvals=[
             Years[0],
@@ -107,8 +107,8 @@ def JIF_graph_func(input, name):
             Years[3],
             Years[4],
             Years[5],
-            Years[6],
-            Years[7],
+            # Years[6],
+            # Years[7],
         ],
     )
 
@@ -118,8 +118,8 @@ def JIF_graph_func(input, name):
     Year_four = JIFcounts[(JIFcounts["Year"] == Years_int[3])]
     Year_five = JIFcounts[(JIFcounts["Year"] == Years_int[4])]
     Year_six = JIFcounts[(JIFcounts["Year"] == Years_int[5])]
-    Year_seven = JIFcounts[(JIFcounts["Year"] == Years_int[6])]
-    Year_eight = JIFcounts[(JIFcounts["Year"] == Years_int[7])]
+    # Year_seven = JIFcounts[(JIFcounts["Year"] == Years_int[6])]
+    # Year_eight = JIFcounts[(JIFcounts["Year"] == Years_int[7])]
 
     highest_y_value = max(
         Year_one["Count"].sum(),
@@ -128,8 +128,8 @@ def JIF_graph_func(input, name):
         Year_four["Count"].sum(),
         Year_five["Count"].sum(),
         Year_six["Count"].sum(),
-        Year_seven["Count"].sum(),
-        Year_eight["Count"].sum(),
+        # Year_seven["Count"].sum(),
+        # Year_eight["Count"].sum(),
     )
 
     if highest_y_value < 10:
@@ -156,7 +156,7 @@ def JIF_graph_func(input, name):
         gridcolor="lightgrey",
         linecolor="black",
         dtick=yaxis_tick,
-        range=[0, int(highest_y_value * 1.15)],
+        range=[0, int(highest_y_value * 1.1)],
     )
     if not os.path.isdir("Plots/"):
         os.mkdir("Plots/")
@@ -168,5 +168,5 @@ def JIF_graph_func(input, name):
 # make plots by applying function
 
 # JIF_graph_func(JIF_sub_group_inf, "infra")
-JIF_graph_func(JIF_sub_group_fell, "fellows")
-# JIF_graph_func(JIF_sub_group_aff, "affiliates")
+# JIF_graph_func(JIF_sub_group_fell, "fellows")
+JIF_graph_func(JIF_sub_group_aff, "affiliates")

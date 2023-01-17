@@ -2,11 +2,12 @@
 # Based on data from KTH
 
 import pandas as pd
+import numpy as np
 
 # information from KTH
 
 Pubs_JIF_raw = pd.read_excel(
-    "Data/SciLifeLab-byaddress-20211217.xlsx",
+    "Data/SciLifeLab-affiliates-20221212.xlsx",
     sheet_name="publ_info",
     header=0,
     engine="openpyxl",
@@ -15,8 +16,8 @@ Pubs_JIF_raw = pd.read_excel(
 
 # information for JIF scores
 JIF_scores_raw = pd.read_excel(
-    "Data/JIF_scores_2021.xlsx",
-    sheet_name="Sheet 1 - JournalHomeGrid",
+    "Data/JCR_JournalResults_12_2022_byISSN_221208_affadded.xlsx",
+    sheet_name="JCR",
     header=0,
     engine="openpyxl",
     keep_default_na=False,
@@ -25,8 +26,8 @@ JIF_scores_raw = pd.read_excel(
 # Need to filter for the appropriate time frame
 
 Pubs_JIF_raw = Pubs_JIF_raw[
-    (Pubs_JIF_raw["Publication_year"] > 2015)
-    & (Pubs_JIF_raw["Publication_year"] < 2022)
+    (Pubs_JIF_raw["Publication_year"] > 2016)
+    & (Pubs_JIF_raw["Publication_year"] < 2023)
 ]
 
 # Need to join the two above files and align JIF with ISSN/ISSN-L
@@ -43,9 +44,9 @@ Pubs_JIF_sub = Pubs_JIF_raw[
 
 JIF_scores_sub = JIF_scores_raw[
     [
-        "Full Journal Title",
-        "JCR Abbreviated Title",
-        "Impact Factor without Journal Self Cites",
+        "Journal name",
+        "JCR Abbreviation",
+        "JIF Without Self Cites",
     ]
 ]
 
@@ -55,8 +56,8 @@ JIF_scores_sub = JIF_scores_raw[
 Pubs_JIF_sublow = Pubs_JIF_sub.apply(lambda x: x.astype(str).str.lower())
 JIF_scores_sublow = JIF_scores_sub.apply(lambda x: x.astype(str).str.lower())
 Pubs_JIF_sublow["Journal"] = Pubs_JIF_sublow["Journal"].str.replace(".", "", regex=True)
-JIF_scores_sublow["JCR Abbreviated Title"] = JIF_scores_sublow[
-    "JCR Abbreviated Title"
+JIF_scores_sublow["JCR Abbreviation"] = JIF_scores_sublow[
+    "JCR Abbreviation"
 ].str.replace("-basel", "", regex=True)
 
 
@@ -65,7 +66,7 @@ JIF_merge_abbnames = pd.merge(
     JIF_scores_sublow,
     how="left",
     left_on="Journal",
-    right_on="JCR Abbreviated Title",
+    right_on="JCR Abbreviation",
 )
 
 
@@ -73,8 +74,8 @@ JIF_merge_abbnames.drop_duplicates(subset="UT", keep="first", inplace=True)
 
 JIF_merge_abbnames = JIF_merge_abbnames.drop(
     [
-        "Full Journal Title",
-        "JCR Abbreviated Title",
+        "Journal name",
+        "JCR Abbreviation",
     ],
     axis=1,
 )
@@ -84,21 +85,20 @@ JIF_merge_fullnames = pd.merge(
     JIF_scores_sublow,
     how="left",
     left_on="Journal",
-    right_on="Full Journal Title",
+    right_on="Journal name",
 )
 
 JIF_merge_fullnames.drop_duplicates(subset="UT", keep="first", inplace=True)
 
-
-JIF_merge_fullnames["Impact Factor without Journal Self Cites_y"] = JIF_merge_fullnames[
-    "Impact Factor without Journal Self Cites_y"
-].fillna(JIF_merge_fullnames["Impact Factor without Journal Self Cites_x"])
+JIF_merge_fullnames["JIF Without Self Cites_y"] = JIF_merge_fullnames[
+    "JIF Without Self Cites_y"
+].fillna(JIF_merge_fullnames["JIF Without Self Cites_x"])
 
 JIF_merge_fullnames = JIF_merge_fullnames.drop(
     [
-        "Full Journal Title",
-        "JCR Abbreviated Title",
-        "Impact Factor without Journal Self Cites_x",
+        "Journal name",
+        "JCR Abbreviation",
+        "JIF Without Self Cites_x",
     ],
     axis=1,
 )
@@ -108,15 +108,15 @@ JIF_merge_fullnames = JIF_merge_fullnames.drop(
 
 JIF_merge_fullnames.rename(
     columns={
-        "Impact Factor without Journal Self Cites_y": "JIF",
+        "JIF Without Self Cites_y": "JIF",
         "Publication_year": "Year",
     },
     inplace=True,
 )
 
-JIF_merge_fullnames.to_excel("Check_me_manual_improve_aff.xlsx")
+# JIF_merge_fullnames.to_excel("Check_me_manual_improve_aff_3.xlsx")
 
-
+JIF_merge_fullnames = JIF_merge_fullnames.replace("n/a", np.nan)
 JIF_merge_fullnames["JIF"] = JIF_merge_fullnames["JIF"].fillna(-1)
 
 JIF_merge_fullnames["JIF"] = pd.to_numeric(JIF_merge_fullnames["JIF"])
