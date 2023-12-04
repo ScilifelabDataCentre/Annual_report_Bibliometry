@@ -1,81 +1,39 @@
-# Annual Reports
+# Annual Report Bibliometry
 
-## Overview
+This repository contains the code required to perform the bibliometric analysis presented in the SciLifeLab annual report. The subfolders represent scripts related to a given year. The scripts outside of a subfolder are the scripts for the latest year. The scripts are be categorised according to the plot that they relate to.
 
-This repository contains the code required to perform the bibliometric analysis presented in the SciLifeLab annual report The scripts are categorised according to the plot that they relate to.
+## colour_science_year.py (used in multiple plots)
 
-<br/>
+Used to assign colours in multiple graphs. There is no need to run this script or edit it before use, it is simply imported.
 
-***
+## Calculation of collaboration between infrastructure units
 
+Used to calculate the level of collaboration between infrastructure units. Rules change periodically, this script uses rules applicable in a given year.
 
-## Setup
+**infra_collab_calc.py** - This uses the rules set out by OO (infra) in each year, some units are considered together, so collaborations between them are not counted.
 
-### Prerequisites
+## JIF stacked plot
 
-- Python 3.x
-- pip
+This plot shows the number of publications produced in each year for a 5 year timespan (e.g. for 2021, use 2016-2021). It also shows the number of papers that fall into each category of JIF score.
 
-### Clone the repository
+**JIF_aff_data_prep.py** - this script prepares the data for the affiliates dataset. You must ensure that the link to the data is set up the same way for the script to work unedited.
 
-```
-git clone [repository URL]
-```
+**JIF_fell_data_prep.py** - this script prepares the data for the fellows dataset. You must ensure that the link to the data is set up the same way for the script to work unedited.
 
-### Create a virtual environment
+**JIF_inf_data_prep.py** - this script prepares the data for the infrastructure dataset. You must ensure that the link to the data is set up the same way for the script to work unedited.
 
-Open a terminal window and run the below commands.
+**JIF_plot.py** - this script uses the data from the data_prep scripts above to create the JIF plots for each group. If the prep scripts are set up, then this script can be used directly and unedited.
 
-```bash
-$ python3 -m venv venv
-```
+## Citation number plot
 
-### Activate the virtual environment
+This plot represents the number of citations acquired by all scilifelab affiliates/infrastructure users in each year for the last 5 years e.g. 2016-21 for 2021.
 
-```bash
-$ source ./venv/bin/activate
-```
+**citation_number.py** - this script completes the calculations required to sum the number of citations and produce the plots.
 
-### Upgrade pip
+## Venn plot
 
-```bash
-$ python3 -m pip install --upgrade pip
-```
+**venn_diagram.py** - This plot shows the numbers of papers produced by scilifelab infrastructure users and affiliated researchers, and how many they collaborated on in the last 5 years. All instructions for use are available in the script itself.
 
-### Install the requirements from the desired requirements.txt file, e.g.
+## Benchmarking plot
 
-    $ python3 -m pip install -r requirements.txt
-
-or
-
-    $ python3 -m pip install -r reports2022/requirements.txt
-
-<br/>
-
-***
-
-
-## Usage
-
-The programs are implemented as either Python scripts or Jupyter notebooks. 
-
-### Activate the virtual environment
-
-```bash
-$ source ./venv/bin/activate
-```
-
-### Execute a Python script at the command prompt
-
-```python
-python3 [script_file.py]
-```
-
-### Run a Jupyter notebook
-
-Select the python kernel from the local virtual env.
-Follow the instructions in each Juputer notebook to execute the notebook cells. 
-
-<br/>
-
-
+**benchmarking.py** - This plot shows the pptop(10) scores of papers produced by scilifelab infrastructure users and affiliated researchers, compared to overall scores for papers produced by Swedish researchers in general. We focus on the 6 subjects in which SciLifeLab completed the most work in the last 5. All instructions for use are available in the script itself.
