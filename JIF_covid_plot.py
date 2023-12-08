@@ -1,21 +1,14 @@
-# For the annual report, need the last 5 years for all groups (2016-2020 in this case)
+# For the annual report, need all years at present (may limit to same as fellows/inf/aff in future)
 import pandas as pd
 import os
 import plotly.graph_objects as go
 
-from colour_science_2021 import (
+from colour_science_2023 import (
     SCILIFE_COLOURS,
 )
 
-# facilities data
-from JIF_infra_data_prepnbis import JIF_sub_group_inf
-
-# # fellows data
-# from JIF_fell_data_prep import JIF_sub_group_fell
-
-# affiliates data
-# from JIF_aff_data_prep import JIF_sub_group_aff
-JIF_sub_group_inf = JIF_sub_group_inf[JIF_sub_group_inf.Year != "nan"]
+# ScilifeLab/KAW COVID papers
+from JIF_covid_data_prep import JIF_sub_group_cov
 
 
 def JIF_graph_func(input, name):
@@ -76,10 +69,10 @@ def JIF_graph_func(input, name):
         barmode="stack",
         plot_bgcolor="white",
         autosize=False,
-        font=dict(size=50),  # 58 for fellows
-        margin=dict(r=250, t=0, b=0, l=0),
-        width=2500,
-        height=1200,
+        font=dict(size=30),  # 58 for fellows
+        margin=dict(r=125, t=0, b=0, l=0),
+        width=900,
+        height=600,
         showlegend=False,
     )
     # List years to use in x-axis
@@ -92,30 +85,16 @@ def JIF_graph_func(input, name):
         linecolor="black",
         # add more years as needed
         ticktext=[
-            "<b> 2012 </b>",  # 2017
-            "<b> 2013 </b>",  # 2017
-            "<b> 2014 </b>",  # 2017
-            "<b> 2015 </b>",  # 2017
-            "<b> 2016 </b>",  # 2017
-            "<b> 2017 </b>",  # 2017
-            "<b> 2018 </b>",  # 2017
-            "<b> 2019 </b>",  # 2017
             "<b> 2020 </b>",  # 2017
             "<b> 2021 </b>",  # 2017
             "<b> 2022 </b>",  # 2017
+            "<b> 2023 </b>",  # 2017
         ],
         tickvals=[
             Years[0],
             Years[1],
             Years[2],
             Years[3],
-            Years[4],
-            Years[5],
-            Years[6],
-            Years[7],
-            Years[8],
-            Years[9],
-            Years[10],
         ],
     )
 
@@ -123,20 +102,12 @@ def JIF_graph_func(input, name):
     Year_two = JIFcounts[(JIFcounts["Year"] == Years_int[1])]
     Year_three = JIFcounts[(JIFcounts["Year"] == Years_int[2])]
     Year_four = JIFcounts[(JIFcounts["Year"] == Years_int[3])]
-    Year_five = JIFcounts[(JIFcounts["Year"] == Years_int[4])]
-    Year_six = JIFcounts[(JIFcounts["Year"] == Years_int[5])]
-    # Year_seven = JIFcounts[(JIFcounts["Year"] == Years_int[6])]
-    # Year_eight = JIFcounts[(JIFcounts["Year"] == Years_int[7])]
 
     highest_y_value = max(
         Year_one["Count"].sum(),
         Year_two["Count"].sum(),
         Year_three["Count"].sum(),
         Year_four["Count"].sum(),
-        Year_five["Count"].sum(),
-        Year_six["Count"].sum(),
-        # Year_seven["Count"].sum(),
-        # Year_eight["Count"].sum(),
     )
 
     if highest_y_value < 10:
@@ -163,7 +134,7 @@ def JIF_graph_func(input, name):
         gridcolor="lightgrey",
         linecolor="black",
         dtick=yaxis_tick,
-        range=[0, 100],  # int(highest_y_value * 1.1)],
+        range=[0, int(highest_y_value * 1.1)],
     )
     if not os.path.isdir("Plots/"):
         os.mkdir("Plots/")
@@ -174,6 +145,4 @@ def JIF_graph_func(input, name):
 
 # make plots by applying function
 
-JIF_graph_func(JIF_sub_group_inf, "NBIS_1")
-# JIF_graph_func(JIF_sub_group_fell, "fellows")
-# JIF_graph_func(JIF_sub_group_aff, "affiliates")
+JIF_graph_func(JIF_sub_group_cov, "covid")

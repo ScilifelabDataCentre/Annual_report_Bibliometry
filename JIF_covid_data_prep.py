@@ -6,72 +6,23 @@ import numpy as np
 
 # information from publication database
 
-# infra = pd.read_excel(
-#     "Data/infrastructure_pd_extract_22.xlsx",
-#     sheet_name="Publications",
-#     header=0,
-#     engine="openpyxl",
-#     keep_default_na=False,
-# )
-
 Pubs_JIF_raw = pd.read_excel(
-    "Data/NBIS pubs 2012 2022.xlsx",
-    sheet_name="NBIS all",
+    "Data/2023/covid_data.xlsx",
+    sheet_name="Publications",
     header=0,
     engine="openpyxl",
     keep_default_na=False,
 )
-
-
-# NBIS.drop(
-#     [
-#         "Authors",
-#         "Journal",
-#         "Year",
-#         "Published",
-#         "E-published",
-#         "Volume",
-#         "Issue",
-#         "Pages",
-#         "DOI",
-#         "PMID",
-#         "Labels",
-#         "Qualifiers",
-#         "IUID",
-#         "URL",
-#         "DOI URL",
-#         "PubMed URL",
-#     ],
-#     axis=1,
-#     inplace=True,
-# )
-# print(NBIS.info())
-# print(infra.info())
-
-# Pubs_JIF_raw = pd.merge(
-#     NBIS,
-#     infra,
-#     how="left",
-#     on="Title",
-# )
-# print(Pubs_JIF_raw.info())
-# Pubs_JIF_raw.to_excel("NBIS_ISSNs.xlsx")
 
 # information for JIF scores
 
 JIF_scores_raw = pd.read_excel(
-    "Data/JCR_JournalResults_12_2022_byISSN_221208_affadded_1.xlsx",  # JCR_JournalResults_12_2022_byISSN_221208.xlsx",
-    sheet_name="JCR",
+    "Data/2023/JCR_JournalResults_2023_MB_neat.xlsx",
+    sheet_name="AIS_2",
     header=0,
     engine="openpyxl",
     keep_default_na=False,
 )
-
-# Need to filter for the appropriate time frame
-
-# Pubs_JIF_raw = Pubs_JIF_raw[
-#     (Pubs_JIF_raw["Year"] > 2016) & (Pubs_JIF_raw["Year"] < 2023)
-# ]
 
 # Need to join the two above files and align JIF with ISSN/ISSN-L
 # simpler to work with only columns of interest
@@ -185,8 +136,6 @@ JIF_merge_abbnames = JIF_merge_abbnames.drop(
     axis=1,
 )
 
-# JIF_merge_abbnames.to_excel("infra_check_manual.xlsx")
-
 # print(JIF_merge_abbnames.info())
 
 # another ISSN match (ISSN with eISSN)
@@ -216,7 +165,7 @@ JIF_merge_weISSN = JIF_merge_weISSN.drop(
     axis=1,
 )
 
-JIF_merge_weISSN.to_excel("nbis_check_manual_update_1.xlsx")
+# JIF_merge_weISSN.to_excel("covid_check_manual_update.xlsx")
 
 # # # segment up the JIFs to groups
 
@@ -239,16 +188,16 @@ JIF_merge_weISSN["JIFcat"] = pd.cut(
     include_lowest=True,
     labels=["JIF unknown", "JIF <6", "JIF 6-9", "JIF 9-25", "JIF >25"],
 )
-JIF_merge_weISSN.to_excel("NBIS_JIF_TESTING_1.xlsx")
+
 # # Need to do a group by and check the sums work
 
 JIF_sub = JIF_merge_weISSN[["Year", "Labels", "JIFcat"]]
 
 
-JIF_sub_group_inf = JIF_sub.groupby(["Year", "JIFcat"]).size().reset_index()
+JIF_sub_group_cov = JIF_sub.groupby(["Year", "JIFcat"]).size().reset_index()
 
-JIF_sub_group_inf.columns = ["Year", "JIFcat", "Count"]
+JIF_sub_group_cov.columns = ["Year", "JIFcat", "Count"]
 
 
-# # # Use this to check that the sums are as expected given the original publication files
-JIF_sub_group_inf.to_excel("NBIS_JIF_groups_2.xlsx")
+# # Use this to check that the sums are as expected given the original publication files
+JIF_sub_group_cov.to_excel("covid_JIF_groups_Dec23.xlsx")

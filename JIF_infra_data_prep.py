@@ -7,8 +7,8 @@ import numpy as np
 # information from publication database
 
 Pubs_JIF_raw = pd.read_excel(
-    "Data/infrastructure_pd_extract_22.xlsx",
-    sheet_name="Publications",
+    "Data/2023/SciLifeLab_publications_Infrastucture_2023.xlsx",
+    sheet_name="Publications 20231204-1239",
     header=0,
     engine="openpyxl",
     keep_default_na=False,
@@ -17,8 +17,8 @@ Pubs_JIF_raw = pd.read_excel(
 # information for JIF scores
 
 JIF_scores_raw = pd.read_excel(
-    "Data/JCR_JournalResults_12_2022_byISSN_221208.xlsx",
-    sheet_name="JCR",
+    "Data/2023/JCR_JournalResults_2023_MB_neat.xlsx",
+    sheet_name="AIS_2",
     header=0,
     engine="openpyxl",
     keep_default_na=False,
@@ -27,7 +27,7 @@ JIF_scores_raw = pd.read_excel(
 # Need to filter for the appropriate time frame
 
 Pubs_JIF_raw = Pubs_JIF_raw[
-    (Pubs_JIF_raw["Year"] > 2016) & (Pubs_JIF_raw["Year"] < 2023)
+    (Pubs_JIF_raw["Year"] > 2017) & (Pubs_JIF_raw["Year"] < 2024)
 ]
 
 # Need to join the two above files and align JIF with ISSN/ISSN-L
@@ -173,7 +173,7 @@ JIF_merge_weISSN = JIF_merge_weISSN.drop(
     axis=1,
 )
 
-# JIF_merge_weISSN.to_excel("infra_check_manual_update.xlsx")
+# JIF_merge_weISSN.to_excel("infra_check_manual_update_2.xlsx")
 
 # # # segment up the JIFs to groups
 
@@ -208,4 +208,4 @@ JIF_sub_group_inf.columns = ["Year", "JIFcat", "Count"]
 
 
 # # Use this to check that the sums are as expected given the original publication files
-# JIF_sub_group_inf.to_excel("infra_JIF_groups_1.xlsx")
+JIF_sub_group_inf.to_excel("infra_JIF_groups_Dec23.xlsx")

@@ -2,8 +2,8 @@ import pandas as pd
 
 # get the data
 infra = pd.read_excel(
-    "Data/Infrastructure_pd_extract_221213.xlsx",
-    sheet_name="Publications",
+    "Data/2023/SciLifeLab_publications_Infrastucture_2023.xlsx",
+    sheet_name="Publications 20231204-1239",
     header=0,
     engine="openpyxl",
     keep_default_na=False,
@@ -11,7 +11,7 @@ infra = pd.read_excel(
 
 # filter as needed (just latest year, only need a couple of columns)
 
-infra_collabs = infra[(infra["Year"] == 2022)]  # set year here!!
+infra_collabs = infra[(infra["Year"] == 2023)]  # set year here!!
 infra_collabs = infra_collabs[["DOI", "Labels"]]
 
 # Replace string values with respect to the rules set out by OO
@@ -212,7 +212,7 @@ new_bits["No_units"] = new_bits.count(axis=1)
 
 # This file is a test file you can use to check everything looks correct
 
-new_bits.to_excel("TESTCHECK_collaborations.xlsx")
+# new_bits.to_excel("TESTCHECK_collaborations.xlsx")
 
 # Need to work out a percantage to use in the report
 
@@ -225,16 +225,15 @@ Perc_collab = (
 print(Perc_collab)
 
 # noticed that there are some errors in the automatic counts, so need to make manual adjustments
-# specifically 4 units have count  of 1, when should be 2
-print((new_bits["No_units"].map(lambda x: x > 1).sum()) + 4)
+print((new_bits["No_units"].map(lambda x: x > 1).sum()) + 7)
 print(new_bits["No_units"].count())
 
 Perc_collab = (
-    (new_bits["No_units"].map(lambda x: x > 1).sum() + 4)
+    (new_bits["No_units"].map(lambda x: x > 1).sum() + 7)
     / (new_bits["No_units"].count())
 ) * 100
 
 # Output percentage, so that it can be communicated to OO
 
 print(Perc_collab)
-# should be 11.04
+# should be 10.14
