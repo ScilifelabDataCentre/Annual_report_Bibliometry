@@ -1,5 +1,5 @@
-# Preparation of the data related to infrastructure for JIF plot
-# Based on data from infrastructure publications database (filtered for active facilities each year)
+# Preparation of the data related to affiliated researchers for JIF plot
+# Based on data from affiliates publications database (filtered for fellows)
 
 import pandas as pd
 import numpy as np
@@ -7,7 +7,7 @@ import numpy as np
 # information from publication database
 
 Pubs_JIF_raw = pd.read_excel(
-    "Data/2023/covid_data.xlsx",
+    "Data/2023/DDLS_fellows.xlsx",
     sheet_name="Publications",
     header=0,
     engine="openpyxl",
@@ -23,6 +23,36 @@ JIF_scores_raw = pd.read_excel(
     engine="openpyxl",
     keep_default_na=False,
 )
+
+# Need to filter for the appropriate time frame
+
+Pubs_JIF_raw = Pubs_JIF_raw[
+    (Pubs_JIF_raw["Year"] > 2017) & (Pubs_JIF_raw["Year"] < 2024)
+]
+
+# Need to join the two above files and align JIF with ISSN/ISSN-L
+# simpler to work with only columns of interest
+
+Pubs_JIF_sub = Pubs_JIF_raw[
+    [
+        "Title",
+        "Year",
+        "Labels",
+        "Journal",
+        "ISSN",
+        "ISSN-L",
+    ]
+]
+
+JIF_scores_sub = JIF_scores_raw[
+    [
+        "ISSN",
+        "eISSN",
+        "Journal name",
+        "JCR Abbreviation",
+        "JIF Without Self Cites",
+    ]
+]
 
 # Need to join the two above files and align JIF with ISSN/ISSN-L
 # simpler to work with only columns of interest
@@ -119,11 +149,15 @@ JIF_merge_abbnames = pd.merge(
     right_on="JCR Abbreviation",
 )
 
+
 JIF_merge_abbnames["JIF Without Self Cites_x"] = JIF_merge_abbnames[
     "JIF Without Self Cites_x"
 ].fillna(JIF_merge_abbnames["JIF Without Self Cites"])
 
+
 JIF_merge_abbnames.drop_duplicates(subset="Title", keep="first", inplace=True)
+
+JIF_merge_abbnames.to_excel("Check_me_manual_DDLSfellows_improve_Dec23_2.xlsx")
 
 JIF_merge_abbnames = JIF_merge_abbnames.drop(
     [
@@ -136,10 +170,6 @@ JIF_merge_abbnames = JIF_merge_abbnames.drop(
     axis=1,
 )
 
-# print(JIF_merge_abbnames.info())
-
-# another ISSN match (ISSN with eISSN)
-
 JIF_merge_weISSN = pd.merge(
     JIF_merge_abbnames,
     JIF_scores_sublow,
@@ -149,6 +179,7 @@ JIF_merge_weISSN = pd.merge(
 )
 
 JIF_merge_weISSN.drop_duplicates(subset="Title", keep="first", inplace=True)
+
 
 JIF_merge_weISSN["JIF Without Self Cites_x"] = JIF_merge_weISSN[
     "JIF Without Self Cites_x"
@@ -165,9 +196,9 @@ JIF_merge_weISSN = JIF_merge_weISSN.drop(
     axis=1,
 )
 
-JIF_merge_weISSN.to_excel("covid_check_manual_update_2.xlsx")
 
-# # # segment up the JIFs to groups
+## below prints out a file that can be checked to determine whether
+## manual work may increase the number of matches
 
 JIF_merge_weISSN.rename(
     columns={
@@ -182,6 +213,12 @@ JIF_merge_weISSN = JIF_merge_weISSN.replace("n/a", np.nan)
 JIF_merge_weISSN["JIF"] = JIF_merge_weISSN["JIF"].fillna(-1)
 
 JIF_merge_weISSN["JIF"] = pd.to_numeric(JIF_merge_weISSN["JIF"])
+
+JIF_merge_weISSN.to_excel("Check_me_manual_ddlsfellows_improve_Dec23_3.xlsx")
+
+
+JIF_merge_weISSN["JIF"] = JIF_merge_weISSN["JIF"].fillna(-1)
+JIF_merge_weISSN["JIF"] = pd.to_numeric(JIF_merge_weISSN["JIF"])
 JIF_merge_weISSN["JIFcat"] = pd.cut(
     JIF_merge_weISSN["JIF"],
     bins=[-1, 0, 6, 9, 25, 1000],
@@ -189,15 +226,7 @@ JIF_merge_weISSN["JIFcat"] = pd.cut(
     labels=["JIF unknown", "JIF <6", "JIF 6-9", "JIF 9-25", "JIF >25"],
 )
 
-# # Need to do a group by and check the sums work
+JIF_fell_data = JIF_merge_weISSN.groupby(["Year", "JIFcat"]).size().reset_index()
+JIF_fell_data.columns = ["Year", "JIFcat", "Count"]
 
-JIF_sub = JIF_merge_weISSN[["Year", "Labels", "JIFcat"]]
-
-
-JIF_sub_group_cov = JIF_sub.groupby(["Year", "JIFcat"]).size().reset_index()
-
-JIF_sub_group_cov.columns = ["Year", "JIFcat", "Count"]
-
-
-# # Use this to check that the sums are as expected given the original publication files
-JIF_sub_group_cov.to_excel("covid_JIF_groups_Dec23.xlsx")
+JIF_fell_data.to_excel("categorise_ddlsfellows_JIF_Dec23.xlsx")

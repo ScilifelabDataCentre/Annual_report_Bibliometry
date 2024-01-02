@@ -8,7 +8,7 @@ import os
 # The benchmark values come separately from KTH
 
 benchmark = pd.read_excel(
-    "Data/SciLifeLab_swe_benchmark.xlsx",
+    "Data/2023/SciLifeLab_swe_benchmark.xlsx",
     sheet_name="SciLifeLab_swe_benchmark",
     header=0,
     engine="openpyxl",
@@ -18,7 +18,7 @@ benchmark = pd.read_excel(
 # The information for affiliates will come with their subjects and impact scores assigned
 
 affiliates = pd.read_excel(
-    "Data/SciLifeLab_cf_subj_cat_affiliates.xlsx",
+    "Data/2023/SciLifeLab_cf_subj_cat_affiliates.xlsx",
     sheet_name="SciLifeLab_cf_subj_cat_affiliat",
     header=0,
     engine="openpyxl",
@@ -28,7 +28,7 @@ affiliates = pd.read_excel(
 # The information for infrastructure units will come with their subjects and impact scores assigned
 
 infra = pd.read_excel(
-    "Data/SciLifeLab_cf_subj_cat_infrastructure.xlsx",
+    "Data/2023/SciLifeLab_cf_subj_cat_infrastructure.xlsx",
     sheet_name="SciLifeLab_cf_subj_cat_infrastr",
     header=0,
     engine="openpyxl",
@@ -36,7 +36,7 @@ infra = pd.read_excel(
 )
 
 # we calculate the scores based on the last 3 years for which scores are available
-# for 2022, this is 2017-2020
+# for 2023, this is 2018-2021
 
 benchmark_compare = benchmark[
     [
@@ -46,10 +46,10 @@ benchmark_compare = benchmark[
     ]  # , "cf_scxwo_full"]
 ]
 benchmark_compare = benchmark_compare[
-    (benchmark_compare["Publication_year"] == 2017)
-    | (benchmark_compare["Publication_year"] == 2018)
+    (benchmark_compare["Publication_year"] == 2018)
     | (benchmark_compare["Publication_year"] == 2019)
     | (benchmark_compare["Publication_year"] == 2020)
+    | (benchmark_compare["Publication_year"] == 2021)
 ]
 
 bench_pp_fields = (
@@ -73,10 +73,10 @@ aff_sub = affiliates[
     ]
 ]
 aff_years = aff_sub[
-    (aff_sub["Publication_year"] == 2017)
-    | (aff_sub["Publication_year"] == 2018)
+    (aff_sub["Publication_year"] == 2018)
     | (aff_sub["Publication_year"] == 2019)
     | (aff_sub["Publication_year"] == 2020)
+    | (aff_sub["Publication_year"] == 2021)
 ]
 aff_years = aff_years[
     (
@@ -116,10 +116,10 @@ inf_sub = infra[
     ["Publication_year", "Subject_category", "Top10_scxwo", "Doc_type_code_rev"]
 ]
 inf_years = inf_sub[
-    (inf_sub["Publication_year"] == 2017)
-    | (inf_sub["Publication_year"] == 2018)
+    (inf_sub["Publication_year"] == 2018)
     | (inf_sub["Publication_year"] == 2019)
     | (inf_sub["Publication_year"] == 2020)
+    | (inf_sub["Publication_year"] == 2021)
 ]
 
 # filter for categories for which benchmarking values have been calculated
@@ -241,9 +241,9 @@ fig.update_yaxes(
     showgrid=True,
     gridcolor="lightgrey",
     linecolor="black",
-    ticktext=["0", "10", "20", "30", "40"],
-    tickvals=["0", "10", "20", "30", "40"],
-    range=[0, 41],
+    ticktext=["0", "10", "20", "30"],
+    tickvals=["0", "10", "20", "30"],
+    range=[0, 31],
 )
 
 # Use the below to look at the figure (initial draft)
@@ -253,5 +253,5 @@ fig.update_yaxes(
 if not os.path.isdir("Plots/"):
     os.mkdir("Plots/")
 
-fig.write_image("Plots/benchmark_pptop10_swe_2.svg")
-fig.write_image("Plots/benchmark_pptop10_swe_2.png")
+fig.write_image("Plots/benchmark_pptop10_swe.svg")
+fig.write_image("Plots/benchmark_pptop10_swe.png")

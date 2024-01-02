@@ -14,7 +14,8 @@ from JIF_infra_data_prep import JIF_sub_group_inf
 # from JIF_fell_data_prep import JIF_sub_group_fell
 
 # affiliates data
-# from JIF_aff_data_prep import JIF_sub_group_aff
+from JIF_aff_data_prep import JIF_sub_group_aff
+
 # JIF_sub_group_inf = JIF_sub_group_inf[JIF_sub_group_inf.Year != "nan"]
 
 
@@ -175,6 +176,5 @@ def JIF_graph_func(input, name):
 
 # make plots by applying function
 
-JIF_graph_func(JIF_sub_group_inf, "infrastructure")
-# JIF_graph_func(JIF_sub_group_fell, "fellows")
-# JIF_graph_func(JIF_sub_group_aff, "affiliates")
+# JIF_graph_func(JIF_sub_group_inf, "infrastructure")
+JIF_graph_func(JIF_sub_group_aff, "affiliates")

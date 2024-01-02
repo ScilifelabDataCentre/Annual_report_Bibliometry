@@ -7,7 +7,7 @@ import numpy as np
 # information from KTH
 
 Pubs_JIF_raw = pd.read_excel(
-    "Data/SciLifeLab-affiliates-20221212.xlsx",
+    "Data/2023/SciLifeLab-Affiliates-20231208.xlsx",
     sheet_name="publ_info",
     header=0,
     engine="openpyxl",
@@ -16,8 +16,8 @@ Pubs_JIF_raw = pd.read_excel(
 
 # information for JIF scores
 JIF_scores_raw = pd.read_excel(
-    "Data/JCR_JournalResults_12_2022_byISSN_221208_affadded.xlsx",
-    sheet_name="JCR",
+    "Data/2023/JCR_JournalResults_2023_MB_neat.xlsx",
+    sheet_name="AIS_2",
     header=0,
     engine="openpyxl",
     keep_default_na=False,
@@ -26,8 +26,8 @@ JIF_scores_raw = pd.read_excel(
 # Need to filter for the appropriate time frame
 
 Pubs_JIF_raw = Pubs_JIF_raw[
-    (Pubs_JIF_raw["Publication_year"] > 2016)
-    & (Pubs_JIF_raw["Publication_year"] < 2023)
+    (Pubs_JIF_raw["Publication_year"] > 2017)
+    & (Pubs_JIF_raw["Publication_year"] < 2024)
 ]
 
 # Need to join the two above files and align JIF with ISSN/ISSN-L
@@ -114,7 +114,7 @@ JIF_merge_fullnames.rename(
     inplace=True,
 )
 
-# JIF_merge_fullnames.to_excel("Check_me_manual_improve_aff_3.xlsx")
+# JIF_merge_fullnames.to_excel("Check_me_manual_improve_aff.xlsx")
 
 JIF_merge_fullnames = JIF_merge_fullnames.replace("n/a", np.nan)
 JIF_merge_fullnames["JIF"] = JIF_merge_fullnames["JIF"].fillna(-1)
