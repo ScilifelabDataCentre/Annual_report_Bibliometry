@@ -1,0 +1,5 @@
+## How to use the circos plot scripts
+
+- fac_map.py: prepares the data for use in the circos plot script. It works to match the labels of units used in the publications database (current in 2024) with official labels that should be shown on the plot. It may require changes when new data is used, so work should be completed to make appropriate matches (comments are provided in script to aid with this).
+
+- circosplot.py: as of 2024, there is no direct way to create a circos plot in python with freely available packages. This script contains multiple functions that enable one to be produced using plotly. Comments have been made in the script to show the sources used to generate the code, as well as to provide information on what certain functions so. Some manual changes might be needed when using new data, in particular the ordering of the units that follows the order in the 'Reporting Units 2024.xlsx' as supplied by OO. Compute and storage are not shown in any year (as of 2024), so should be removed by default. In this version, the colours have been set so that units in the same platform are coloured the same way.  
