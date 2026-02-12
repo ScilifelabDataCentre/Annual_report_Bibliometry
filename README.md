@@ -1,6 +1,6 @@
 # Annual Report Bibliometry
 
-This repository contains the code required to perform the bibliometric analysis presented in the SciLifeLab annual report. The subfolders represent scripts related to a given year. The scripts outside of a subfolder are the scripts for the latest year. The scripts are be categorised according to the plot that they relate to.
+This repository contains the code required to perform the bibliometric analysis presented in the SciLifeLab annual report. The subfolders represent scripts related to a given year. The scripts are named according to the plot that they relate to.
 
 ## colour_science_year.py (used in multiple plots)
 
